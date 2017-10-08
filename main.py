@@ -9,19 +9,19 @@ app = Flask(__name__)
 def index():
     return "Server is Running!"
 
-gameIds = []
+deviceIds = []
 startTime = 0
 
 @app.route('/startgame', methods=['GET'])
 def start_game():
-    if len(gameIds) % 2 == 0: #First Device
-        new_game_id = create_random_game_id(gameIds)
-        gameIds.append(new_game_id)
+    if len(deviceIds) % 2 == 0: #First Device
+        new_game_id = create_random_game_id(deviceIds)
+        deviceIds.append(new_game_id)
 
         return make_response(jsonify({'gameId': new_game_id}), 200)
-    elif len(gameIds) % 2 == 1: #Seconde Device
-        new_game_id = create_random_game_id(gameIds)
-        gameIds.append(new_game_id)
+    elif len(deviceIds) % 2 == 1: #Seconde Device
+        new_game_id = create_random_game_id(deviceIds)
+        deviceIds.append(new_game_id)
 
         global startTime
         startTime = datetime.datetime.now().second + 5
@@ -34,9 +34,9 @@ def start_game():
 
 @app.route('/gamestatus', methods=['GET'])
 def game_status():
-    if len(gameIds) % 2 == 1:
+    if len(deviceIds) % 2 == 1:
         return make_response(jsonify({"statusText": "Waiting for Player"}), 200)
-    if len(gameIds) % 2 == 0:
+    if len(deviceIds) % 2 == 0:
         return make_response(jsonify({'startTime': startTime}), 200)
 
     abort(404)
@@ -44,8 +44,8 @@ def game_status():
 
 @app.route('/reset', methods=["GET"])
 def reset_game_ids():
-    global gameIds
-    gameIds = []
+    global deviceIds
+    deviceIds = []
     return make_response("Success!", 200)
 
 if __name__ == '__main__':
